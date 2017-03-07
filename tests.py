@@ -43,9 +43,23 @@ class ChunkedLogTestCase(unittest.TestCase):
         self.assertTrue(unexpected_entry not in text)
 
 class DigitalEventsTestCase(unittest.TestCase):
-    def test_match_ignored(self):
-        self.assertTrue (match_ignored('/foo', ['/foo']))
-        self.assertTrue (match_ignored('/foo', ['/foo', '/bar']))
-        self.assertFalse (match_ignored('/foo', ['/bar']))
-        self.assertFalse (match_ignored('/foo', ['/bar', '/bar/foo']))
+    """
+    First argument is path to match.
+    Second argument is a list of paths to match exactly.
+    Third argument is a list of paths to match only if initial starts with
+    the pattern.
+    """
+    def test_match_ignored_path_exact(self):
+        self.assertTrue (match_ignored('/foo', ['/foo'], []))
+        self.assertTrue (match_ignored('/foo', ['/foo', '/bar'], []))
+        self.assertTrue (match_ignored('/foo/$?=', ['/bar/', '/foo/$?='], []))
+
+    def test_match_ignored_path_startswith(self):
+        self.assertTrue (match_ignored('/foobarbar', [], ['/foo']))
+        self.assertTrue (match_ignored('/foo/bar/foobar', [], ['/foo/']))
+
+
+    def test_no_match(self):
+        self.assertFalse (match_ignored('/foobarbar', [], ['/oo']))
+        self.assertFalse (match_ignored('/foobarbar', ['/foobar'], ['/oo']))
 
