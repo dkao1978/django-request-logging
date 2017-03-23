@@ -25,7 +25,7 @@ class LoggingMiddleware(object):
                              self.ignored_paths_exact,
                              self.ignored_paths_startswith):
             return
-        request_logger.info(colorize("{} {}".format(request.method, request.get_full_path()), fg="cyan"))
+        request_logger.info(colorize("{} {}".format(request.method, request.body), fg="cyan"))
         if (request.body):
             self.log_body(self.chunked_to_max(request.body), level=logging.INFO)
 
